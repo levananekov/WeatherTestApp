@@ -8,7 +8,7 @@ class WeatherPresenter : BasePresenter<WheatherFragmentView>() {
 //    }
 
 
-    fun getWeather(){
+    fun getWeather() {
 
 //        var field = fieldDataManager.getById(fieldId)
 
@@ -21,7 +21,7 @@ class WeatherPresenter : BasePresenter<WheatherFragmentView>() {
         })
     }
 
-    fun getWind(){
+    fun getWind() {
 
         handler.post(Runnable {
             if (!(view is WheatherFragmentView)) {

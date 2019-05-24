@@ -13,17 +13,17 @@ import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePres
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.PresenterManager
 
 
-open abstract class BaseFragment <P> : Fragment(), BaseView {
+open abstract class BaseFragment<P> : Fragment(), BaseView {
     companion object {
         val ITEM_ID_KEY = "item_id"
         val FLUSH_ITEMS_LIST_KEY = "flush_items_list"
     }
 
     open abstract var presenter: P
-//    protected lateinit var gpsHelper: GpsHelper
+    //    protected lateinit var gpsHelper: GpsHelper
     protected var handler = Handler()
 
-     override val mContext: Context
+    override val mContext: Context
         get() = activity as Context
 
 

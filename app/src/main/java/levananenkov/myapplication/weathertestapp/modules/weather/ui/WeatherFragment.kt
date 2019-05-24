@@ -32,6 +32,9 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WheatherFragmentView {
         presenter.getWeather()
     }
 
+
+
+
     override fun createOrRestorePresenter(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val restored = PresenterManager.restorePresenter(savedInstanceState)
@@ -57,5 +60,10 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WheatherFragmentView {
     override fun onResume() {
         super.onResume()
         button1.setOnClickListener { presenter.getWind()}
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.onViewDestroy()
     }
 }

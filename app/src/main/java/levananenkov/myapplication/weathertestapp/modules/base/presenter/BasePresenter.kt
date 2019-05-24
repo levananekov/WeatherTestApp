@@ -52,7 +52,7 @@ open abstract class BasePresenter<V> {
         isViewResumed = false
     }
 
-    open fun onViewDestroy(mayBeRecreated: Boolean) {
+    open fun onViewDestroy() {
         view = null
 
     }
