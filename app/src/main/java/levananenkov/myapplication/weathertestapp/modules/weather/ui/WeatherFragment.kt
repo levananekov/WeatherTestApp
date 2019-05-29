@@ -1,18 +1,15 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
-import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.weather_fragment.*
 import levananenkov.myapplication.weathertestapp.R
-import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.PresenterManager
 import levananenkov.myapplication.weathertestapp.modules.base.ui.BaseFragment
 
-class WeatherFragment: BaseFragment <WeatherPresenter>(), WheatherFragmentView {
+class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
 
 
     override lateinit var presenter: WeatherPresenter
@@ -49,13 +46,15 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WheatherFragmentView {
 //        app().createFieldComponent().inject(this)
     }
 
-    override fun onGetWheather(string: String) {
+    override fun onGetWeather(string: String) {
         textView.text = string
      }
 
     override fun onGetWind(string1: String) {
         textView.text = string1
+        textView2.text =string1
     }
+
 
     override fun onResume() {
         super.onResume()

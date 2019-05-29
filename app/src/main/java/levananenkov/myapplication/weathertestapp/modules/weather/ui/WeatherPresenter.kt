@@ -2,7 +2,7 @@ package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 
-class WeatherPresenter : BasePresenter<WheatherFragmentView>() {
+class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
 //    override fun exitView() {
 //        view?.exit()
 //    }
@@ -13,22 +13,22 @@ class WeatherPresenter : BasePresenter<WheatherFragmentView>() {
 //        var field = fieldDataManager.getById(fieldId)
 
         handler.post(Runnable {
-            if (!(view is WheatherFragmentView)) {
+            if (!(view is WeatherFragmentView)) {
                 return@Runnable
             }
 
-            (view as WheatherFragmentView).onGetWheather("какой то текст")
+            (view as WeatherFragmentView).onGetWeather("какой то текст")
         })
     }
 
     fun getWind() {
 
         handler.post(Runnable {
-            if (!(view is WheatherFragmentView)) {
+            if (!(view is WeatherFragmentView)) {
                 return@Runnable
             }
 
-            (view as WheatherFragmentView).onGetWind("какой то другой текст")
+            (view as WeatherFragmentView).onGetWind("какой то другой текст")
         })
     }
 }
