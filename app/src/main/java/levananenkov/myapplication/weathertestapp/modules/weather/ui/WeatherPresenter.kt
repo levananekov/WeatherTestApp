@@ -1,24 +1,39 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
+import android.util.Log
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
+import levananenkov.myapplication.weathertestapp.modules.weather.datamanager.WeatherDataManager
 
 class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
-//    override fun exitView() {
-//        view?.exit()
-//    }
 
+    private var weatherDataManager: WeatherDataManager? = null
 
-    fun getWeather() {
+    override fun onViewCreate(view: WeatherFragmentView) {
+        super.onViewCreate(view)
+        weatherDataManager = WeatherDataManager(mContext)
+    }
 
-//        var field = fieldDataManager.getById(fieldId)
+    fun getWeather(query:String) {
 
-        handler.post(Runnable {
-            if (!(view is WeatherFragmentView)) {
-                return@Runnable
-            }
+        var request = weatherDataManager?.getWeather(query)
+        try {
+            request?.subscribe(
+                { weatherResponse ->
+                    handler.post(Runnable {
+                        if (!(view is WeatherFragmentView)) {
+                            return@Runnable
+                        }
 
-            (view as WeatherFragmentView).onGetWeather("какой то текст")
-        })
+                        (view as WeatherFragmentView).onGetWeather(weatherDataManager?.responseToModel(weatherResponse))
+                    })
+                },
+                { error ->
+                    Log.e("WeatherPresenter", "Error getWeather $error")
+                }
+            )
+        } catch (e: RuntimeException) {
+
+        }
     }
 
     fun getWind() {

@@ -8,11 +8,16 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import rx.schedulers.Schedulers
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
+import okhttp3.Response
+import java.io.IOException
+
 
 abstract class BaseModule<Api>(open var context: Context) {
 
     companion object {
-        val BASE_POI_URL = "https://scanex.simpls.ru/"
+        val BASE_POI_URL = "https://samples.openweathermap.org/data/2.5/"
     }
 
     protected val baseUrl: String
@@ -21,6 +26,25 @@ abstract class BaseModule<Api>(open var context: Context) {
     protected val baseBuilder: Retrofit.Builder
         get() {
             val httpClient = OkHttpClient.Builder()
+
+            httpClient.addInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    val original = chain.request()
+                    val originalHttpUrl = original.url()
+
+                    val url = originalHttpUrl.newBuilder()
+                        .addQueryParameter("appid", "1111111111")
+                        .build()
+
+                    // Request customization: add request headers
+                    val requestBuilder = original.newBuilder()
+                        .url(url)
+
+                    val request = requestBuilder.build()
+                    return chain.proceed(request)
+                }
+            })
 
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)

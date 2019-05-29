@@ -7,29 +7,12 @@ import levananenkov.myapplication.weathertestapp.modules.base.domain.model.BaseM
 import rx.Observable
 import java.util.*
 
-abstract class BaseDatamanager <Model : BaseModel, ModelResponse> constructor(private val baseDao: BaseDao<Model>) {
-
-    fun getListFromServer() : Observable<List<ModelResponse>> {
-        val request = getListApi()!!.cache()
-
-        request.subscribe (
-            { serverBases ->
-                serverBases.forEach {
-                    baseDao.save(responseToModel(it))
-                }
-            },
-            { error ->
-            }
-        )
-
-        return request
-    }
+abstract class BaseDataManager <Model : BaseModel, ModelResponse> {
+    abstract var baseDao: BaseDao<Model>
 
     abstract fun responseToModel(modelResponse: ModelResponse): Model
 
-    open protected abstract fun getListApi() : Observable<List<ModelResponse>>?
-
-    fun getList(query: String? = null, whereList : HashMap<String, String> = HashMap<String, String>()) : List<Model>? {
+    open fun getList(query: String? = null, whereList : HashMap<String, String> = HashMap<String, String>()) : List<Model>? {
         if (query != null) {
             if (!TextUtils.isEmpty(query)) {
                 whereList.put(getDefaultQueryField(), query)

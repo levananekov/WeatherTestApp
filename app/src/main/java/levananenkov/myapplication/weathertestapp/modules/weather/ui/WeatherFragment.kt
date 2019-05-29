@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.weather_fragment.*
 import levananenkov.myapplication.weathertestapp.R
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.PresenterManager
 import levananenkov.myapplication.weathertestapp.modules.base.ui.BaseFragment
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
 
 class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
 
@@ -26,10 +27,8 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.onViewCreate(this)
-        presenter.getWeather()
+        presenter.getWeather("Ekaterinburg")
     }
-
-
 
 
     override fun createOrRestorePresenter(savedInstanceState: Bundle?) {
@@ -46,8 +45,8 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
 //        app().createFieldComponent().inject(this)
     }
 
-    override fun onGetWeather(string: String) {
-        textView.text = string
+    override fun onGetWeather(weather: Weather?) {
+        textView.text = weather?.name
      }
 
     override fun onGetWind(string1: String) {
@@ -58,7 +57,7 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
 
     override fun onResume() {
         super.onResume()
-        button1.setOnClickListener { presenter.getWind()}
+        button1.setOnClickListener { presenter.getWeather("Ekaterinburg")}
     }
 
     override fun onDestroyView() {
