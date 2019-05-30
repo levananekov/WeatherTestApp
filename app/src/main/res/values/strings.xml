@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WeatherTestApp</string>
+    <string name="location_massage">Запрос на местоположение нужен для точных данных о погоде</string>
+    <string name="location_title">Запрос местоположения</string>
+    <string name="ok_button">OK</string>
+    <string name="location_toast">Разрешение всегда можно включить в настройках</string>
 </resources>
