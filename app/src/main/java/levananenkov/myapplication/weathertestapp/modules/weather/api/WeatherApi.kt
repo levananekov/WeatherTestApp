@@ -9,7 +9,8 @@ interface WeatherApi {
 
     @GET("weather/")
     fun getWeather(
-        @Query("q") query: String,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
         @Query("APPID") appid: String = "f788dec846a09c6d8eb90b68b8a41ea2",
         @Query("units") units: String = "metric"
     ): Observable<Weather>

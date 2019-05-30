@@ -1,5 +1,6 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
+import android.location.Location
 import android.util.Log
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 import levananenkov.myapplication.weathertestapp.modules.weather.datamanager.WeatherDataManager
@@ -13,9 +14,13 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         weatherDataManager = WeatherDataManager(mContext)
     }
 
-    fun getWeather(query:String) {
+    fun getWeather(location: Location?) {
 
-        var request = weatherDataManager?.getWeather(query)
+        if (location == null){
+            return
+        }
+
+        var request = weatherDataManager?.getWeather(location)
         try {
             request?.subscribe(
                 { weather ->

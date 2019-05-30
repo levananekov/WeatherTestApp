@@ -1,6 +1,7 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.datamanager
 
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import levananenkov.myapplication.weathertestapp.modules.base.dao.BaseDao
 import levananenkov.myapplication.weathertestapp.modules.base.datamanager.BaseDataManager
@@ -31,13 +32,13 @@ class WeatherDataManager constructor(private val context: Context) :
         weatherApi = weatherModule.provideWeatherApi()
     }
 
-    fun getWeather(query:String): Observable<Weather>? {
-        val request = weatherApi?.getWeather(query)?.cache()
+    fun getWeather(location: Location): Observable<Weather>? {
+        val request = weatherApi?.getWeather(location.latitude, location.longitude)?.cache()
 
         try {
             request?.subscribe(
                 { weather ->
-                   baseDao.save(weather)
+                    baseDao.save(weather)
 
                 },
                 { error ->
