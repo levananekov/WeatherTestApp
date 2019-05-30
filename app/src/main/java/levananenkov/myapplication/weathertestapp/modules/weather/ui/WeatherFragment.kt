@@ -27,7 +27,7 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.onViewCreate(this)
-        presenter.getWeather("Ekaterinburg")
+//        presenter.getWeather("Paris")
     }
 
 
@@ -42,11 +42,11 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
         }
         presenter = WeatherPresenter()
 
-//        app().createFieldComponent().inject(this)
     }
 
     override fun onGetWeather(weather: Weather?) {
         textView.text = weather?.name
+        textView2.text = weather?.main?.temp.toString()
      }
 
     override fun onGetWind(string1: String) {
@@ -57,7 +57,7 @@ class WeatherFragment: BaseFragment <WeatherPresenter>(), WeatherFragmentView {
 
     override fun onResume() {
         super.onResume()
-        button1.setOnClickListener { presenter.getWeather("Ekaterinburg")}
+        button1.setOnClickListener { presenter.getWeather("Paris")}
     }
 
     override fun onDestroyView() {

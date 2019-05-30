@@ -18,13 +18,13 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         var request = weatherDataManager?.getWeather(query)
         try {
             request?.subscribe(
-                { weatherResponse ->
+                { weather ->
                     handler.post(Runnable {
                         if (!(view is WeatherFragmentView)) {
                             return@Runnable
                         }
 
-                        (view as WeatherFragmentView).onGetWeather(weatherDataManager?.responseToModel(weatherResponse))
+                        (view as WeatherFragmentView).onGetWeather(weather)
                     })
                 },
                 { error ->
@@ -36,14 +36,4 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         }
     }
 
-    fun getWind() {
-
-        handler.post(Runnable {
-            if (!(view is WeatherFragmentView)) {
-                return@Runnable
-            }
-
-            (view as WeatherFragmentView).onGetWind("какой то другой текст")
-        })
-    }
 }

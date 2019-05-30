@@ -7,16 +7,15 @@ import levananenkov.myapplication.weathertestapp.modules.base.datamanager.BaseDa
 import levananenkov.myapplication.weathertestapp.modules.weather.api.WeatherApi
 import levananenkov.myapplication.weathertestapp.modules.weather.dao.WeatherDao
 import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherResponse
 import levananenkov.myapplication.weathertestapp.modules.weather.injection.WeatherModule
 import rx.Observable
 
 class WeatherDataManager constructor(private val context: Context) :
-    BaseDataManager<Weather, WeatherResponse>() {
+    BaseDataManager<Weather, Weather>() {
     override var baseDao: BaseDao<Weather> = WeatherDao()
 
-    override fun responseToModel(modelResponse: WeatherResponse): Weather {
-        return Weather()
+    override fun responseToModel(model: Weather): Weather {
+        return model
     }
 
     private var weatherApi: WeatherApi? = null
@@ -32,13 +31,13 @@ class WeatherDataManager constructor(private val context: Context) :
         weatherApi = weatherModule.provideWeatherApi()
     }
 
-    fun getWeather(query:String): Observable<WeatherResponse>? {
+    fun getWeather(query:String): Observable<Weather>? {
         val request = weatherApi?.getWeather(query)?.cache()
 
         try {
             request?.subscribe(
-                { weatherResponse ->
-                   baseDao.save(responseToModel(weatherResponse))
+                { weather ->
+                   baseDao.save(weather)
 
                 },
                 { error ->

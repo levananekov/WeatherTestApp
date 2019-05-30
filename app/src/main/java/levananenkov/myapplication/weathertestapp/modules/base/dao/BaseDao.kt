@@ -28,6 +28,8 @@ open class BaseDao<Model : BaseModel> {
                 }
             }
         } catch (e: RuntimeException) {
+            var k = 0
+            k++
 
         } finally {
             if (realm != null) {
@@ -42,8 +44,10 @@ open class BaseDao<Model : BaseModel> {
             return model
         }
 
-        if (model.id == null) {
-            model.id = generateId()
+        if (model.created_at == null) {
+            if (model.id == null) {
+                model.id = generateId()
+            }
             model.created_at = dateHelper.dateToDbStr()
         }
 

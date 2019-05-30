@@ -17,7 +17,7 @@ import java.io.IOException
 abstract class BaseModule<Api>(open var context: Context) {
 
     companion object {
-        val BASE_POI_URL = "https://samples.openweathermap.org/data/2.5/"
+        val BASE_POI_URL = "http://api.openweathermap.org/data/2.5/"
     }
 
     protected val baseUrl: String
