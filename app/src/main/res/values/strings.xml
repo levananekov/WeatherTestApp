@@ -4,4 +4,9 @@
     <string name="location_title">Запрос местоположения</string>
     <string name="ok_button">OK</string>
     <string name="location_toast">Разрешение всегда можно включить в настройках</string>
+    <string name="location_null">Местоположение неизвестно, проверьте настройки</string>
+    <string name="no_play_serv">Нет возможности использовать геолокацию</string>
+    <string name="no_button">Отмена</string>
+    <string name="no_location_title">Нет доступа к геолокации.</string>
+    <string name="no_location_masage">Для получения погоды нужен доступ к геолокации</string>
 </resources>

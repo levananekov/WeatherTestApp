@@ -17,10 +17,9 @@ import levananenkov.myapplication.weathertestapp.modules.base.ui.BaseFragment
 import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
 import com.google.android.gms.location.FusedLocationProviderClient
 import android.annotation.SuppressLint
-import android.Manifest.permission
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
@@ -33,6 +32,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     override lateinit var presenter: WeatherPresenter
     private val REQUEST_ERROR = 0
     private val REQUEST_LOCATION_PERMISSIONS = 1
+    private val REQUEST_LOCATION_SETTINGS = 2
 
     private val LOCATION_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -73,7 +73,8 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.onViewCreate(this)
-//        presenter.getWeather("Paris")
+        getWeather()
+
     }
 
 
@@ -176,17 +177,50 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                 doGetWeather()
             } else {
                 Toast.makeText(activity, getString(R.string.location_toast), Toast.LENGTH_LONG)
-                    .show();
+                    .show()
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_LOCATION_SETTINGS) {
+            getWeather()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     @SuppressLint("MissingPermission")
     private fun doGetWeather() {
         mFusedLocationClient!!.lastLocation!!.addOnSuccessListener { location ->
+            if (location == null) {
+                showLocationSetingsDialog()
+                return@addOnSuccessListener
+            }
             presenter.getWeather(location)
         }
+    }
+
+    private fun showLocationSetingsDialog() {
+        AlertDialog.Builder(activity!!)
+            .setTitle(getString(R.string.no_location_title))
+            .setMessage(getString(R.string.no_location_masage))
+            .setPositiveButton(
+                R.string.ok_button,
+                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
+                    startActivityForResult(
+                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+                        REQUEST_LOCATION_SETTINGS
+                    )
+                    dialogInterface.cancel()
+                })
+            .setNegativeButton(getString(R.string.no_button),
+                DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
+                    dialogInterface.cancel()
+                }
+
+            )
+            .show()
     }
 
 }

@@ -4,6 +4,7 @@ import android.location.Location
 import android.util.Log
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 import levananenkov.myapplication.weathertestapp.modules.weather.datamanager.WeatherDataManager
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
 
 class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
 
@@ -15,7 +16,11 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
     }
 
     fun getWeather(location: Location?) {
-
+        val last = weatherDataManager!!.getLast()
+        if (last != null && !weatherDataManager!!.mustUpdateWeather(last)){
+            onGetWeater(last)
+            return
+        }
         if (location == null){
             return
         }
@@ -24,13 +29,7 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         try {
             request?.subscribe(
                 { weather ->
-                    handler.post(Runnable {
-                        if (!(view is WeatherFragmentView)) {
-                            return@Runnable
-                        }
-
-                        (view as WeatherFragmentView).onGetWeather(weather)
-                    })
+                    onGetWeater(weather)
                 },
                 { error ->
                     Log.e("WeatherPresenter", "Error getWeather $error")
@@ -39,6 +38,17 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         } catch (e: RuntimeException) {
 
         }
+    }
+
+
+    private fun onGetWeater(weather:Weather){
+        handler.post(Runnable {
+            if (!(view is WeatherFragmentView)) {
+                return@Runnable
+            }
+
+            (view as WeatherFragmentView).onGetWeather(weather)
+        })
     }
 
 }
