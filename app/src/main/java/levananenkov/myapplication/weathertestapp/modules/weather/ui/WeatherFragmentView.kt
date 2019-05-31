@@ -1,10 +1,10 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
 import levananenkov.myapplication.weathertestapp.modules.base.ui.BaseView
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
 
 interface WeatherFragmentView: BaseView {
-    fun onGetWeather(weather: Weather?)
+    fun onGetWeather(weatherData: WeatherData?)
     fun onGetWind(str:String)
 
 }

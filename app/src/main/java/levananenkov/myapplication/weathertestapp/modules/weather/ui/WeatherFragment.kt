@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.weather_fragment.*
 import levananenkov.myapplication.weathertestapp.R
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.PresenterManager
 import levananenkov.myapplication.weathertestapp.modules.base.ui.BaseFragment
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
 import com.google.android.gms.location.FusedLocationProviderClient
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -89,11 +89,11 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
 
     }
 
-    override fun onGetWeather(weather: Weather?) {
-        textView.text = weather?.name
-        textView2.text = weather?.main?.temp.toString()
-        textView3.text = weather?.wind?.speed.toString()
-        textView4.text = weather?.wind?.deg.toString()
+    override fun onGetWeather(weatherData: WeatherData?) {
+        textView.text = weatherData?.name
+        textView2.text = weatherData?.main?.temp.toString()
+        textView3.text = weatherData?.wind?.speed.toString()
+        textView4.text = weatherData?.wind?.deg.toString()
     }
 
     override fun onGetWind(string1: String) {

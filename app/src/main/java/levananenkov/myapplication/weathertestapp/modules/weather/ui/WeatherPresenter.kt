@@ -4,7 +4,7 @@ import android.location.Location
 import android.util.Log
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 import levananenkov.myapplication.weathertestapp.modules.weather.datamanager.WeatherDataManager
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
 
 class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
 
@@ -41,13 +41,13 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
     }
 
 
-    private fun onGetWeater(weather:Weather){
+    private fun onGetWeater(weatherData:WeatherData){
         handler.post(Runnable {
             if (!(view is WeatherFragmentView)) {
                 return@Runnable
             }
 
-            (view as WeatherFragmentView).onGetWeather(weather)
+            (view as WeatherFragmentView).onGetWeather(weatherData)
         })
     }
 

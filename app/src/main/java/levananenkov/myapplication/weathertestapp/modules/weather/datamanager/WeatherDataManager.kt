@@ -8,21 +8,20 @@ import levananenkov.myapplication.weathertestapp.modules.base.datamanager.BaseDa
 import levananenkov.myapplication.weathertestapp.modules.base.utils.DateHelper
 import levananenkov.myapplication.weathertestapp.modules.weather.api.WeatherApi
 import levananenkov.myapplication.weathertestapp.modules.weather.dao.WeatherDao
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.Weather
+import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
 import levananenkov.myapplication.weathertestapp.modules.weather.injection.WeatherModule
 import rx.Observable
-import java.time.LocalDateTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class WeatherDataManager constructor(private val context: Context) :
-    BaseDataManager<Weather, Weather>() {
-    override var baseDao: BaseDao<Weather> = WeatherDao()
+    BaseDataManager<WeatherData, WeatherData>() {
+    override var baseDao: BaseDao<WeatherData> = WeatherDao()
     private var weatherDao: WeatherDao = WeatherDao()
 
     private val dataHelper = DateHelper()
 
-    override fun responseToModel(model: Weather): Weather {
+    override fun responseToModel(model: WeatherData): WeatherData {
         return model
     }
 
@@ -39,7 +38,7 @@ class WeatherDataManager constructor(private val context: Context) :
         weatherApi = weatherModule.provideWeatherApi()
     }
 
-    fun getWeather(location: Location): Observable<Weather>? {
+    fun getWeather(location: Location): Observable<WeatherData>? {
         val request = weatherApi?.getWeather(location.latitude, location.longitude)?.cache()
 
         try {
@@ -58,13 +57,13 @@ class WeatherDataManager constructor(private val context: Context) :
         return request
     }
 
-    fun getLast(): Weather? {
+    fun getLast(): WeatherData? {
         return weatherDao.getLast()
     }
 
 
-    fun mustUpdateWeather(weather: Weather): Boolean {
-        var createdDate = dataHelper.dbStrToDate(weather.created_at!!)
+    fun mustUpdateWeather(weatherData: WeatherData): Boolean {
+        var createdDate = dataHelper.dbStrToDate(weatherData.created_at!!)
         var diffInMillisec = Date().time - createdDate.time
         val diffInMin = TimeUnit.MILLISECONDS.toMinutes(diffInMillisec)
         return diffInMin >= 10
