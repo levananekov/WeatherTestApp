@@ -3,9 +3,6 @@ package levananenkov.myapplication.weathertestapp.modules.weather.ui
 import android.Manifest
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
@@ -23,6 +20,7 @@ import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
+import android.view.*
 import android.widget.Toast
 
 
@@ -33,6 +31,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     private val REQUEST_ERROR = 0
     private val REQUEST_LOCATION_PERMISSIONS = 1
     private val REQUEST_LOCATION_SETTINGS = 2
+    private val MENU_REF = 3
 
     private val LOCATION_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -73,8 +72,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.onViewCreate(this)
-        getWeather()
-
+        setHasOptionsMenu(true)
     }
 
 
@@ -118,15 +116,25 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                     })
             errorDialog.show()
         }
-        button1.setOnClickListener {
-            getWeather()
-        }
-
+        getWeather()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.onViewDestroy()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        menu!!.add(0, MENU_REF, Menu.NONE, "Обновить").setIcon(R.drawable.ic_ref)
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item!!.itemId == MENU_REF) {
+            getWeather()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun getWeather() {
