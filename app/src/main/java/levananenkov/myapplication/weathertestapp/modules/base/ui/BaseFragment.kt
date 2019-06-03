@@ -40,6 +40,11 @@ open abstract class BaseFragment<P> : Fragment(), BaseView {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        PresenterManager.savePresenter(presenter as BasePresenter<*>, outState)
+        super.onSaveInstanceState(outState)
+    }
+
     open protected fun getViewLayout(): Int {
         return 0
     }

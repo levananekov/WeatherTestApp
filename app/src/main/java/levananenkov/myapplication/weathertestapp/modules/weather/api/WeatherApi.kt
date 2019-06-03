@@ -1,6 +1,5 @@
 package levananenkov.myapplication.weathertestapp.modules.weather.api
 
-import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
 import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherDataResponse
 import retrofit2.http.GET
 import retrofit2.http.Query

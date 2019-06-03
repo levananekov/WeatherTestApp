@@ -12,7 +12,7 @@ object PresenterManager {
     private const val CACHE_TIMEOUT_SEC = 10L
     private var KEY_PRESENTER_ID = "presenter_id"
 
-    lateinit private var cache: Cache<String, BasePresenter<*>>
+    private var cache: Cache<String, BasePresenter<*>>
 
     init {
         cache = CacheBuilder.newBuilder()

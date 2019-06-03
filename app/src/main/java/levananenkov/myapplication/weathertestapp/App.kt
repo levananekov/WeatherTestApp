@@ -8,7 +8,7 @@ import io.realm.RealmConfiguration
 
 class App : Application() {
     override fun onCreate() {
-        super.onCreate()
+        super.onCreate()// Конфигурация базы данных
         val realmConfig = RealmConfiguration.Builder(this)
             .name("weather.realm")
             .schemaVersion(0)
