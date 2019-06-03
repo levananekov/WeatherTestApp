@@ -77,8 +77,9 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
                     bitmap: Bitmap?,
                     from: Picasso.LoadedFrom?
                 ) {
-                    weatherDataManager?.saveWeatherIcon(bitmap, weatherData!!.weather!!.icon)
-                    (view as WeatherFragmentView).onGetWeather(weatherData, bitmap!!)
+                    var iconBitmap= weatherDataManager?.scaleBitMap(bitmap)
+                    weatherDataManager?.saveWeatherIcon(iconBitmap, weatherData!!.weather!!.icon)
+                    (view as WeatherFragmentView).onGetWeather(weatherData, iconBitmap!!)
                 }
 
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {

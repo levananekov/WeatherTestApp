@@ -22,7 +22,6 @@
             android:id="@+id/cityView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/font_size" />
     </LinearLayout>
@@ -44,7 +43,6 @@
             android:id="@+id/tempView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/font_size" />
     </LinearLayout>
@@ -66,7 +64,6 @@
             android:id="@+id/windView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/font_size" />
     </LinearLayout>
@@ -88,7 +85,6 @@
             android:id="@+id/windDirectionView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/font_size" />
     </LinearLayout>

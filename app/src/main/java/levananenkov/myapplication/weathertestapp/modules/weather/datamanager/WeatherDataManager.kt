@@ -22,8 +22,6 @@ import android.graphics.BitmapFactory
 import android.util.TypedValue
 
 
-
-
 class WeatherDataManager constructor(private val context: Context) :
     BaseDataManager<WeatherData, WeatherDataResponse>() {
     override var baseDao: BaseDao<WeatherData> = WeatherDao()
@@ -142,18 +140,23 @@ class WeatherDataManager constructor(private val context: Context) :
         }
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
+
+        var bitmap = BitmapFactory.decodeFile(iconFile.absolutePath, options)
+
+        bitmap = scaleBitMap(bitmap)
+        return bitmap
+    }
+
+    fun scaleBitMap(bitmap: Bitmap?): Bitmap {
         val px = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             100F,
             context.resources.displayMetrics
         )
-        var bitmap = BitmapFactory.decodeFile(iconFile.absolutePath, options)
-
-        bitmap = Bitmap.createScaledBitmap(
+        var iconBitmap = Bitmap.createScaledBitmap(
             bitmap,
             px.toInt(), px.toInt(), false
         )
-        return bitmap
+        return iconBitmap
     }
-
 }
