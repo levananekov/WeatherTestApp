@@ -92,10 +92,10 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     }
 
     override fun onGetWeather(weatherData: WeatherData?, iconBitmap: Bitmap) {
-        textView.text = weatherData?.name
-        textView2.text = weatherData?.main?.temp.toString()
-        textView3.text = weatherData?.wind?.speed.toString()
-        textView4.text = weatherData?.wind?.deg.toString()
+        cityView.text = weatherData?.name
+        tempView.text = weatherData?.main?.temp.toString()
+        windView.text = weatherData?.wind?.speed.toString()
+        windDirectionView.text = weatherData?.wind?.deg.toString()
         iconView.setImageBitmap(iconBitmap)
     }
 

@@ -19,6 +19,9 @@ import levananenkov.myapplication.weathertestapp.modules.weather.domain.*
 import java.io.File
 import java.io.FileOutputStream
 import android.graphics.BitmapFactory
+import android.util.TypedValue
+
+
 
 
 class WeatherDataManager constructor(private val context: Context) :
@@ -139,7 +142,17 @@ class WeatherDataManager constructor(private val context: Context) :
         }
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
-        val bitmap = BitmapFactory.decodeFile(iconFile.absolutePath, options)
+        val px = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            100F,
+            context.resources.displayMetrics
+        )
+        var bitmap = BitmapFactory.decodeFile(iconFile.absolutePath, options)
+
+        bitmap = Bitmap.createScaledBitmap(
+            bitmap,
+            px.toInt(), px.toInt(), false
+        )
         return bitmap
     }
 
