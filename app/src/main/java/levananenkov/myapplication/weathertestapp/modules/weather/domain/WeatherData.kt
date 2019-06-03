@@ -14,11 +14,11 @@ open class WeatherData : RealmObject(), BaseModel {
     override var deleted_at: String? = null
     override var updated_at: String? = null
     override var created_at: String? = null
-    override var name:String? = null
-    var main:MainWeather? = null
-    var wind:Wind? = null
-    var weather:Weather? = null
-    var dt:Int? = null
+    override var name: String? = null
+    var main: MainWeather? = null
+    var wind: Wind? = null
+    var weather: Weather? = null
+    var dt: Int? = null
 
 }
 //

@@ -65,6 +65,8 @@ dependencies {
     implementation 'com.uphyca:stetho_realm:2.0.0'
     //location
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+
 }
 repositories {
     mavenCentral()

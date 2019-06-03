@@ -2,9 +2,14 @@ package levananenkov.myapplication.weathertestapp.modules.weather.ui
 
 import android.location.Location
 import android.util.Log
+import com.squareup.picasso.Picasso
 import levananenkov.myapplication.weathertestapp.modules.base.presenter.BasePresenter
 import levananenkov.myapplication.weathertestapp.modules.weather.datamanager.WeatherDataManager
 import levananenkov.myapplication.weathertestapp.modules.weather.domain.WeatherData
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import com.squareup.picasso.Target
+
 
 class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
 
@@ -15,24 +20,32 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         weatherDataManager = WeatherDataManager(mContext)
     }
 
-    fun getWeather(location: Location?) {
+
+
+    fun getWeatherLocal(location: Location?) {
         val last = weatherDataManager!!.getLast()
-        if (last != null && !weatherDataManager!!.mustUpdateWeather(last)){
-            onGetWeater(last)
+        if (last != null && !weatherDataManager!!.mustUpdateWeather(last)) {
+            onGetWeather(last)
             return
         }
-        if (location == null){
+        getWeather(location)
+    }
+
+    fun getWeather(location: Location?){
+        if (location == null) {
             return
         }
 
         var request = weatherDataManager?.getWeather(location)
         try {
             request?.subscribe(
-                { weather ->
-                    onGetWeater(weather)
+                { weatherDataResponse ->
+                    val weatherData = weatherDataManager?.responseToModel(weatherDataResponse)
+
+                    onGetWeather(weatherData!!)
                 },
                 { error ->
-                    Log.e("WeatherPresenter", "Error getWeather $error")
+                    Log.e("WeatherPresenter", "Error getWeatherLocal $error")
                 }
             )
         } catch (e: RuntimeException) {
@@ -41,14 +54,39 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
     }
 
 
-    private fun onGetWeater(weatherData:WeatherData){
+    private fun onGetWeather(weatherData: WeatherData) {
         handler.post(Runnable {
             if (!(view is WeatherFragmentView)) {
                 return@Runnable
             }
-
-            (view as WeatherFragmentView).onGetWeather(weatherData)
+            getWeaterIconBitmap(weatherData)
         })
+    }
+
+
+    private fun getWeaterIconBitmap(weatherData: WeatherData) {
+        val iconBitmap = weatherDataManager!!.getWeaterIconBitmap(weatherData.weather!!.icon)
+        if (iconBitmap != null) {
+            (view as WeatherFragmentView).onGetWeather(weatherData, iconBitmap!!)
+            return
+        }
+        Picasso.with(mContext)
+            .load("http://openweathermap.org/img/w/${weatherData!!.weather!!.icon}.png")
+            .into(object : Target {
+                override fun onBitmapLoaded(
+                    bitmap: Bitmap?,
+                    from: Picasso.LoadedFrom?
+                ) {
+                    weatherDataManager?.saveWeatherIcon(bitmap, weatherData!!.weather!!.icon)
+                    (view as WeatherFragmentView).onGetWeather(weatherData, bitmap!!)
+                }
+
+                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+                }
+
+                override fun onBitmapFailed(errorDrawable: Drawable?) {
+                }
+            })
     }
 
 }

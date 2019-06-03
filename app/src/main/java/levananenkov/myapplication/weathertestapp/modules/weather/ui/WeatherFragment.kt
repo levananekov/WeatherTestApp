@@ -16,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v4.app.ActivityCompat
@@ -32,6 +33,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
     private val REQUEST_LOCATION_PERMISSIONS = 1
     private val REQUEST_LOCATION_SETTINGS = 2
     private val MENU_REF = 3
+    private var refreshData = false
 
     private val LOCATION_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -89,18 +91,13 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
 
     }
 
-    override fun onGetWeather(weatherData: WeatherData?) {
+    override fun onGetWeather(weatherData: WeatherData?, iconBitmap: Bitmap) {
         textView.text = weatherData?.name
         textView2.text = weatherData?.main?.temp.toString()
         textView3.text = weatherData?.wind?.speed.toString()
         textView4.text = weatherData?.wind?.deg.toString()
+        iconView.setImageBitmap(iconBitmap)
     }
-
-    override fun onGetWind(string1: String) {
-        textView.text = string1
-        textView2.text = string1
-    }
-
 
     @SuppressLint("MissingPermission")
     override fun onResume() {
@@ -132,8 +129,10 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == MENU_REF) {
+            refreshData = true
             getWeather()
         }
+
         return super.onOptionsItemSelected(item)
     }
 
@@ -205,8 +204,14 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                 showLocationSetingsDialog()
                 return@addOnSuccessListener
             }
-            presenter.getWeather(location)
+            if (refreshData) {
+                refreshData = false
+                presenter.getWeather(location)
+            }else {
+                presenter.getWeatherLocal(location)
+            }
         }
+
     }
 
     private fun showLocationSetingsDialog() {
