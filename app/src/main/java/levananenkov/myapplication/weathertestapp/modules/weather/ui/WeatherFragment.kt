@@ -45,66 +45,65 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mClient = GoogleApiClient.Builder(activity!!)
+        mClient = GoogleApiClient.Builder(activity!!) //Получение клиента для подключения к гугл апи
             .addApi(LocationServices.API).build()
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity!!)
+        mFusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(activity!!) //Получаем клиента для получения местоположения
     }
 
     override fun onStart() {
         super.onStart()
-        activity!!.invalidateOptionsMenu()
-        mClient!!.connect()
+        mClient!!.connect() // Подключение к гугл АПИ
     }
 
     override fun onStop() {
         super.onStop()
-        mClient!!.disconnect()
+        mClient!!.disconnect() // Отключение от гугл АПИ
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.weather_fragment, container, false)
+        val view = inflater.inflate(
+            R.layout.weather_fragment,
+            container,
+            false
+        ) //Указываем фрагменту шаблон
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        presenter.onViewCreate(this)
-        setHasOptionsMenu(true)
+        super.onViewCreated(
+            view,
+            savedInstanceState
+        )// В базовом фрагменте происходит создание презентора
+        presenter.onViewCreate(this) //Передаем презенторму ссылку на фрагмент
+        setHasOptionsMenu(true)// Отобразить меню
     }
 
-
+    // Или востанавлиаем из кеша или создаем
     override fun createOrRestorePresenter(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             val restored = PresenterManager.restorePresenter(savedInstanceState)
 
             if (restored != null && restored is WeatherPresenter) {
-                presenter = restored
+                presenter = restored // инициализируем презентор WeatherPresenter
                 return
             }
         }
-        presenter = WeatherPresenter()
+        presenter = WeatherPresenter() // Если не востановили то создаем презентор
 
     }
 
-    override fun onGetWeather(weatherData: WeatherData?, iconBitmap: Bitmap) {
-        cityView.text = weatherData?.name
-        tempView.text = weatherData?.main?.temp.toString()
-        windView.text = weatherData?.wind?.speed.toString()
-        windDirectionView.text = weatherData?.wind?.deg.toString()
-        iconView.setImageBitmap(iconBitmap)
-    }
-
-    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
-        val apiAvailability = GoogleApiAvailability.getInstance()
-        val errorCode = apiAvailability.isGooglePlayServicesAvailable(activity)
-        if (errorCode != ConnectionResult.SUCCESS) {
+        val apiAvailability =
+            GoogleApiAvailability.getInstance() // Получили инстансы для проверки гугл сервисов
+        val errorCode =
+            apiAvailability.isGooglePlayServicesAvailable(activity) //Доступны ли сервисы гугл
+        if (errorCode != ConnectionResult.SUCCESS) { // Покажет алерт диалог если нет сервисов
             val errorDialog = apiAvailability
                 .getErrorDialog(activity, errorCode, REQUEST_ERROR,
                     object : DialogInterface.OnCancelListener {
@@ -112,55 +111,57 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                         }
                     })
             errorDialog.show()
+            return
         }
-        getWeather()
+        getWeather() // Если сервисы есть выполняем запросы погоды
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.onViewDestroy()
+        presenter.onViewDestroy() // Удаляем ссылку на фрагмент в презенторе
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        menu!!.add(0, MENU_REF, Menu.NONE, "Обновить").setIcon(R.drawable.ic_ref)
-            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu!!.add(0, MENU_REF, Menu.NONE, getString(R.string.refresh))
+            .setIcon(R.drawable.ic_ref)// Настройки кнопки
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)// Как отображать кнопки
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == MENU_REF) {
-            refreshData = true
-            getWeather()
+            refreshData = true // Устанавливаем режим обновления погоды с сервера
+            getWeather() // Что делать при нажатии
         }
-
         return super.onOptionsItemSelected(item)
     }
 
     private fun getWeather() {
-        if (!hasLocationPermission()) {
-            requestPermissionLocations()
+        if (!hasLocationPermission()) { // Проверка разрешений на отображение местопложения
+            requestPermissionLocations() // ЗАпрашиваем разрешение на получение данных о местоположении
         } else {
             doGetWeather()
         }
     }
 
     protected fun requestPermissionLocations() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
+        if (ActivityCompat.shouldShowRequestPermissionRationale( // Если пользователь когда то видел системный диалог на запрос разрешений
                 activity!!, LOCATION_PERMISSIONS[0]
             )
-        ) {
+        ) {// Показываем подробный алерт диалог который говорит зачем нужны пермишены
             AlertDialog.Builder(activity!!)
                 .setTitle(getString(R.string.location_title))
                 .setMessage(getString(R.string.location_massage))
                 .setPositiveButton(getString(R.string.ok_button),
                     DialogInterface.OnClickListener { dialog, which -> doRequestLocationPermission() })
                 .show()
-        } else {
+        } else { // Показываем системный диалог пермишенов
             doRequestLocationPermission()
         }
 
     }
 
+    // Запрос пермишенов на геолокацию
     private fun doRequestLocationPermission() {
         requestPermissions(
             LOCATION_PERMISSIONS,
@@ -168,12 +169,14 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
         )
     }
 
+    // Метод с проверкой пермишенов
     private fun hasLocationPermission(): Boolean {
         val result = ContextCompat
             .checkSelfPermission(activity!!, LOCATION_PERMISSIONS[0])
         return result == PackageManager.PERMISSION_GRANTED
     }
 
+    // Метод который ловит ответ пользователя о пермишене
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -190,28 +193,34 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_LOCATION_SETTINGS) {
-            getWeather()
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
     @SuppressLint("MissingPermission")
     private fun doGetWeather() {
+        // Получение текущего местоположения
         mFusedLocationClient!!.lastLocation!!.addOnSuccessListener { location ->
             if (location == null) {
                 showLocationSetingsDialog()
                 return@addOnSuccessListener
             }
-            if (refreshData) {
-                refreshData = false
-                presenter.getWeather(location)
-            }else {
-                presenter.getWeatherLocal(location)
-            }
-        }
+            try {
+                if (refreshData) {// Если установлен режим запроса данных с сервера
+                    refreshData = false // Сброс режима обновления на дефолт
+                    presenter.getWeather(location)
+                } else {
+                    presenter.getWeatherLocal(location)
+                }
+            } catch (e: RuntimeException) {
 
+            }
+
+        }
+    }
+
+    override fun onGetWeather(weatherData: WeatherData?, iconBitmap: Bitmap) {
+        cityView.text = weatherData?.name
+        tempView.text = weatherData?.main?.temp.toString()
+        windView.text = weatherData?.wind?.speed.toString()
+        windDirectionView.text = weatherData?.wind?.deg.toString()
+        iconView.setImageBitmap(iconBitmap)
     }
 
     private fun showLocationSetingsDialog() {
@@ -222,7 +231,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                 R.string.ok_button,
                 DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
                     startActivityForResult(
-                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),//Отображаем окно настроек и ждем результат действия пользователя
                         REQUEST_LOCATION_SETTINGS
                     )
                     dialogInterface.cancel()
@@ -231,9 +240,15 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                 DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
                     dialogInterface.cancel()
                 }
-
             )
             .show()
     }
 
+    // После закрытия окна с настройками мы попадаем в этот метод (любого другого окна)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_LOCATION_SETTINGS) {
+            getWeather()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 }

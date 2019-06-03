@@ -8,7 +8,7 @@ class WeatherActivity: AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.weather_activity)
-        supportFragmentManager.beginTransaction().replace(R.id.container, WeatherFragment()).commit()
+        setContentView(R.layout.weather_activity)// Задали шаблон для активити
+        supportFragmentManager.beginTransaction().replace(R.id.container, WeatherFragment()).commit()// Вставляем фрагмент в контейнер
     }
 }

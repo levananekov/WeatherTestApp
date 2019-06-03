@@ -153,6 +153,7 @@ class WeatherDataManager constructor(private val context: Context) :
             100F,
             context.resources.displayMetrics
         )
+            // Преобразуем картинку до нужного размера в пикселях
         var iconBitmap = Bitmap.createScaledBitmap(
             bitmap,
             px.toInt(), px.toInt(), false

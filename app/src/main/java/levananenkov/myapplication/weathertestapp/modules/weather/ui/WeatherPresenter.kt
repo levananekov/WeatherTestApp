@@ -20,8 +20,7 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         weatherDataManager = WeatherDataManager(mContext)
     }
 
-
-
+    // Берем данные о погоде из базы данных и если их нет или они старше 10 минут запрашиваем их снова
     fun getWeatherLocal(location: Location?) {
         val last = weatherDataManager!!.getLast()
         if (last != null && !weatherDataManager!!.mustUpdateWeather(last)) {
@@ -31,7 +30,7 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
         getWeather(location)
     }
 
-    fun getWeather(location: Location?){
+    fun getWeather(location: Location?) {
         if (location == null) {
             return
         }
@@ -49,37 +48,47 @@ class WeatherPresenter : BasePresenter<WeatherFragmentView>() {
                 }
             )
         } catch (e: RuntimeException) {
-
         }
     }
-
 
     private fun onGetWeather(weatherData: WeatherData) {
         handler.post(Runnable {
+            // Используя handler возвращяемся в главный поток (request сам создал фоновый поток и из него надо перейти к главному))
             if (!(view is WeatherFragmentView)) {
                 return@Runnable
             }
-            getWeaterIconBitmap(weatherData)
+            getWeatherIconBitmap(weatherData)
         })
     }
 
-
-    private fun getWeaterIconBitmap(weatherData: WeatherData) {
-        val iconBitmap = weatherDataManager!!.getWeaterIconBitmap(weatherData.weather!!.icon)
-        if (iconBitmap != null) {
-            (view as WeatherFragmentView).onGetWeather(weatherData, iconBitmap!!)
+    // По данным о погоде загружаем картинку и сохраняем ее на устройстве
+    private fun getWeatherIconBitmap(weatherData: WeatherData) {
+        val iconBitmap =
+            weatherDataManager!!.getWeaterIconBitmap(weatherData.weather!!.icon) // Проверка есть ли файл в системе
+        if (iconBitmap != null) {//Если файл есть то передаем данные во фрагмент
+            (view as WeatherFragmentView).onGetWeather(
+                weatherData,
+                iconBitmap!!
+            )// Передаем данные о погоде и изображение во вьюху
             return
         }
-        Picasso.with(mContext)
+
+        Picasso.with(mContext) // Если изображения нет, идем за ним на сервер
             .load("http://openweathermap.org/img/w/${weatherData!!.weather!!.icon}.png")
             .into(object : Target {
                 override fun onBitmapLoaded(
                     bitmap: Bitmap?,
                     from: Picasso.LoadedFrom?
                 ) {
-                    var iconBitmap= weatherDataManager?.scaleBitMap(bitmap)
-                    weatherDataManager?.saveWeatherIcon(iconBitmap, weatherData!!.weather!!.icon)
-                    (view as WeatherFragmentView).onGetWeather(weatherData, iconBitmap!!)
+                    var iconBitmap = weatherDataManager?.scaleBitMap(bitmap) // Увеличиваем картинку
+                    weatherDataManager?.saveWeatherIcon(
+                        iconBitmap,
+                        weatherData!!.weather!!.icon
+                    ) // Сохраняем картинку на устройство
+                    (view as WeatherFragmentView).onGetWeather(
+                        weatherData,
+                        iconBitmap!!
+                    ) // Передаем данные о погоде и изображение во вьюху
                 }
 
                 override fun onPrepareLoad(placeHolderDrawable: Drawable?) {

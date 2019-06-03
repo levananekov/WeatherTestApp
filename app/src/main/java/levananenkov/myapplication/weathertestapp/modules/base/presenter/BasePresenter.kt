@@ -24,21 +24,12 @@ open abstract class BasePresenter<V> {
             else return null
         }
 
-
     open protected var isViewResumed: Boolean = false
 
     open val handler = Handler()
 
-    open var isExitEnabled: Boolean = true
-    open var exitDisabledMessage: String = "Пожалуйста дождитесь окончания выполнения запроса"
-
     open val mContext: Context
         get() = (view as BaseView).mContext
-
-
-    open fun init() {
-
-    }
 
     open fun onViewCreate(view: V) {
         this.view = view
@@ -54,6 +45,5 @@ open abstract class BasePresenter<V> {
 
     open fun onViewDestroy() {
         view = null
-
     }
 }
