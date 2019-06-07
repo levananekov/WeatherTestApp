@@ -230,10 +230,7 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
             .setPositiveButton(
                 R.string.ok_button,
                 DialogInterface.OnClickListener() { dialogInterface: DialogInterface, i: Int ->
-                    startActivityForResult(
-                        Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS),//Отображаем окно настроек и ждем результат действия пользователя
-                        REQUEST_LOCATION_SETTINGS
-                    )
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     dialogInterface.cancel()
                 })
             .setNegativeButton(getString(R.string.no_button),
@@ -242,13 +239,5 @@ class WeatherFragment : BaseFragment<WeatherPresenter>(), WeatherFragmentView {
                 }
             )
             .show()
-    }
-
-    // После закрытия окна с настройками мы попадаем в этот метод (любого другого окна)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_LOCATION_SETTINGS) {
-            getWeather()
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }
